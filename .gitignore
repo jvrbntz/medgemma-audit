@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# Secrets / credentials
+.env
+*.env
+kaggle.json
+.kaggle/
+
+# Raw data
+data/*
+!data/.gitkeep
+
+# Notebook checkpoints
+.ipynb_checkpoints/
+
+# Editor / OS noise
+.vscode/
+.DS_Store
