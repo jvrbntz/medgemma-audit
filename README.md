@@ -17,8 +17,8 @@ MedGemma-Audit is an evaluation harness that stress-tests MedGemma 4B (Google's 
 - `transcription`: sample medical transcriptions
 - `keywords`: relevant keywords from transcription
 
-**License:** Kaggle license is CC0: Public Domain.  
-**Privacy:** The MTSamples transcriptions have been de-identified of Private Healthcare Information (PHI).
+**License:** Kaggle dataset license - CC0: Public Domain.  
+**Privacy:** MTSamples states names, locations, and dates were changed in the sample reports.
 
 ## Model Selection
 
