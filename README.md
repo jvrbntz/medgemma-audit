@@ -1,8 +1,10 @@
 # MedGemma-Audit
 
-MedGemma-Audit is an evaluation harness that stress-tests MedGemma 4B (Google's medical specialized model built on Gemma 3, see [Model Selection](#model-section) below) on clinical text tasks. MedGemma is not clinically validated as of August 2026; this project measures where it fails, how often, and why, so a developer can decide whether it's safe to deploy in a clinical support tool.
+MedGemma-Audit is an evaluation harness that stress-tests MedGemma 1.5 4B (Google's medical specialized model built on Gemma 3, see [Model Selection](#model-section) below) on clinical text tasks. MedGemma is not clinically validated as of August 2026; this project measures where it fails, how often, and why, so a developer can decide whether it's safe to deploy in a clinical support tool.
 
 **Status:** pre-build
+
+**Intended use:** This is a learning prototype for practicing LLM evaluation methodology, not a clinical tool. It must not be used to inform patient care, diagnosis, or treatment decisions.
 
 ## Data
 
@@ -17,7 +19,7 @@ MedGemma-Audit is an evaluation harness that stress-tests MedGemma 4B (Google's 
 - `transcription`: sample medical transcriptions
 - `keywords`: relevant keywords from transcription
 
-**License:** Kaggle dataset license - CC0: Public Domain.  
+**License:** Kaggle dataset license - CC0: Public Domain.
 **Privacy:** MTSamples states names, locations, and dates were changed in the sample reports.
 
 ## Model Selection
@@ -36,3 +38,14 @@ MedGemmaAudit uses MedGemma 1.5 4B (`medgemma1.5:4b` via Ollama) rather than the
 _source:_ [MedGemma 1.5 model card](https://developers.google.com/health-ai-developer-foundations/medgemma/model-card)
 
 Per Google's model card, outputs "are not intended to directly inform clinical diagnosis, patient management decisions, treatment recommendations, or any other direct clinical practice applications," and should be "considered preliminary and require independent verification, clinical correlation, and further investigation."
+
+## Known Limitations
+
+- **Training-time contamination.** MTSamples has been public for years. MedGemma may have already seen these exact records during training, so a "correct" diagnosis could just be memorization, not real reasoning. This fails silently: nothing in the output tells you which one happened. Fixing it means paraphrasing the input notes, which is its own project and not worth doing before the core pipeline works, so it's a task for a later version.
+- **Judge bias and reliability.** v1 uses a local, weaker model as judge instead of a paid external one, to skip the extra cost and credential. That means scores could be biased toward outputs that sound like the judge, or miss reasoning errors the judge isn't strong enough to catch itself. A stronger external judge (Claude or GPT via API) is planned for a later version.
+- **Incomplete diagnosis stripping.** Preprocessing strips each note's diagnosis section before MedGemma sees it, using a heuristic based on section headers. MTSamples covers around 40 specialties that don't all format notes the same way, so some notes will slip through. When that happens, MedGemma can just read the answer back instead of reasoning to it, inflating the score for that record. This fails silently, one record at a time.
+
+## Key Design Decisions
+
+- **Differential diagnosis scored by LLM-as-judge.** MedGemma produces a differential diagnosis with reasoning for each note. A second model judges whether the correct diagnosis and other plausible ones show up, and critiques the reasoning. Chose this over simpler options like exact-match scoring against `medical_specialty`, because it captures ranked clinical reasoning instead of reducing it to one label.
+- **Local judge model for v1.** Chose a local Ollama model as judge instead of an external API, to keep v1 free of a paid dependency and a second credential to manage. That means accepting the bias and reliability risk above for now instead of solving it. A stronger external judge is planned for a later version, not ruled out.
