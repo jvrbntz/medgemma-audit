@@ -1,12 +1,14 @@
 # MedGemma-Audit
 
+**Status note (2026-08-20):** the dataset and task below are under reconsideration. See README's Data section and `notebooks/mtsamples_exploration.ipynb`.
+
 ## Problem
 
 MedGemma 1.5 4B is not clinically validated. This project measures where its differential-diagnosis output fails, how often, and why, on MTSamples clinical notes — so a developer building on MedGemma can decide whether it's safe to deploy in a clinical support tool. Full pitch: `README.md`.
 
 ## MVP
 
-Run a handful of MTSamples records through preprocessing (strip the diagnosis section) → MedGemma via Ollama (differential diagnosis + reasoning) → a local LLM judge (scores correct-diagnosis presence, differential breadth, reasoning quality). No dashboard, no batch scaling, no contamination mitigation in v1 — see README's Known Limitations.
+Run a handful of MTSamples records through preprocessing (strip the section where the diagnosis is present) → MedGemma via Ollama (differential diagnosis + reasoning) → a local LLM judge (scores correct-diagnosis presence, differential breadth, reasoning quality). No dashboard, no batch scaling, no contamination mitigation in v1 — see README's Known Limitations.
 
 ## Stack
 
